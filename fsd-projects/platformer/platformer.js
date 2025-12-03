@@ -1,4 +1,4 @@
-$(function ()
+$(function () {
   // initialize canvas and context when able to
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
@@ -6,13 +6,18 @@ $(function ()
 
   function setup() {
     if (firstTimeSetup) {
+      // images
       halleImage = document.getElementById("player");
       projectileImage = document.getElementById("projectile");
       cannonImage = document.getElementById("cannon");
+
+      // keyboard input
       $(document).on("keydown", handleKeyDown);
       $(document).on("keyup", handleKeyUp);
+
       firstTimeSetup = false;
-      //start game
+
+      // start game loop
       setInterval(main, 1000 / frameRate);
     }
 
@@ -27,17 +32,28 @@ $(function ()
     //////////////////////////////////
 
     // TODO 1 - Enable the Grid
-toggleGrid();
+    toggleGrid();
+
     // TODO 2 - Create Platforms
-createPlatform(500, 500, 20, 290);
+    createPlatform(200, 550, 200, 20);
+    createPlatform(500, 450, 150, 20);
+    createPlatform(100, 350, 100, 20);
+    createPlatform(400, 250, 200, 20);
+
     // TODO 3 - Create Collectables
-createCollectable("gold", 200, 170, 0.5, 0.7);
+    createCollectable("diamond", 250, 500);
+    createCollectable("grace", 550, 420, 0.5, 0.7);
+
     // TODO 4 - Create Cannons
-createCannon("right", 300, 2000);
+    createCannon("left", 300, 1500);
+    createCannon("right", 400, 1200);
+    createCannon("top", 250, 2000);
+
     //////////////////////////////////
     // ONLY CHANGE ABOVE THIS POINT //
     //////////////////////////////////
   }
 
+  // register the setup function so the game can call it
   registerSetup(setup);
 });

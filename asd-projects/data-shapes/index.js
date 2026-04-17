@@ -34,20 +34,55 @@ $(document).ready(function () {
   // ALL OF YOUR CODE SHOULD GO BELOW HERE ////////
   /////////////////////////////////////////////////
 
+  // TODO 0 complete
+
   // TODO 1: create a new shape object and add it to the array
-  
+  let shape = {
+    color: "blue",
+    shape: "circle",
+    repeat: 3,
+  };
+  dataShapes.push(shape);
 
   // TODO 2: add a new property to all data shapes
-  
+  for (let i = 0; i < dataShapes.length; i++) {
+    let currentShape = dataShapes[i];
+
+    if (currentShape.color === "red") {
+      currentShape.goodBehavior = "bounce";
+    } else if (currentShape.color === "blue") {
+      currentShape.goodBehavior = "blink";
+    } else {
+      currentShape.goodBehavior = "spin";
+    }
+  }
 
   // TODO 3-a: add a function that handles the static display type
-  
+  function handleStatic(data) {
+    setBackgroundWithObject(data);
+    animationDetails.displayType = 1;
+  }
 
   // TODO 4-a: add a function that handles the good display type
-  
+  function handleGood(color, shape, repeat) {
+    setBackgroundWithSimple(color, shape, repeat);
+    animationDetails.displayType = 2;
+  }
 
   // TODO 5-a: add a function that handles the bad display type
-  
+  // Includes 🌟 Bonus Challenge: Randomization
+  function handleBad(data, repeat) {
+    // Reset display and pick a random index
+    resetDisplay();
+    currentIndex = Math.floor(Math.random() * dataShapes.length);
+
+    // Get the new random shape data
+    let randomShape = dataShapes[currentIndex];
+    let newRepeat = randomShape.repeat + 1;
+
+    setBackgroundWithMixed(randomShape, newRepeat);
+    animationDetails.displayType = 3;
+  }
 
   /////////////////////////////////////////////////
   // BUTTON HANDLERS BELOW HERE (3-b, 4-b, 5-b) ///
@@ -55,24 +90,27 @@ $(document).ready(function () {
 
   function staticDisplay() {
     // TODO 3-b: call your handleStatic function
-    
+    handleStatic(dataShapes[currentIndex]);
   }
 
   function goodDisplay() {
     // TODO 4-b: call your handleGood function
-    
+    let currentShape = dataShapes[currentIndex];
+    handleGood(currentShape.color, currentShape.shape, currentShape.repeat);
   }
 
   function badDisplay() {
     // TODO 5-b: call your handleBad function
-    
+    let currentShape = dataShapes[currentIndex];
+    let repeat = currentShape.repeat;
+    handleBad(currentShape, repeat);
   }
 
   /////////////////////////////////////////////////
   // ALL OF YOUR CODE SHOULD GO ABOVE HERE ////////
   /////////////////////////////////////////////////
 
-  // This function generates objects for 26 of the necessary 27 entries into the dataShapes array that is used for most of this program
+  // This function generates objects for 26 of the entries
   function generateShapeData() {
     const data = [];
     const colors = ["red", "green", "blue"];
@@ -82,7 +120,6 @@ $(document).ready(function () {
     for (var i = 0; i < colors.length; i++) {
       for (var j = 0; j < shapes.length; j++) {
         for (var k = 0; k < repeats.length; k++) {
-          // This condition limits the number of objects created by skipping the combo of "blue circle 3"
           if (
             i !== colors.length - 1 ||
             j !== shapes.length - 1 ||
@@ -98,28 +135,23 @@ $(document).ready(function () {
         }
       }
     }
-
     return data;
   }
 
-  // This function decrements the index of the currently selected object in the array (and resets the display type)
   function decrementIndex() {
     currentIndex = currentIndex ? currentIndex - 1 : dataShapes.length - 1;
     resetDisplay();
   }
 
-  // This function increments the index of the currently selected object in the array (and resets the display type)
   function incrementIndex() {
     currentIndex =
       currentIndex === dataShapes.length - 1 ? 0 : currentIndex + 1;
     resetDisplay();
   }
 
-  // This function resets the display type to the default display (only shows data)
   function resetDisplay() {
     const shapeData = dataShapes[currentIndex];
 
-    // Reset all of the CSS and HTML
     $("#shape").css("background", "none");
     $("#shape").css("display", "block");
     $("#shape").css("background-size", "100% 100%");
@@ -127,12 +159,11 @@ $(document).ready(function () {
     $("#shape").css("top", "150px");
     $("#shape").css("transform", "rotate(0deg)");
     $("#shape").html(
-      `<p>${shapeData.color}</p> <p>${shapeData.shape}</p> <p>${shapeData.repeat}x${shapeData.repeat}</p> <p>${shapeData.goodBehavior}</p>`
+      `<p>${shapeData.color}</p> <p>${shapeData.shape}</p> <p>${shapeData.repeat}x${shapeData.repeat}</p> <p>${shapeData.goodBehavior}</p>`,
     );
 
     $("#info-bar").text(`Current index: ${currentIndex}`);
 
-    // Reset the JavaScript Data
     animationDetails = {
       x: 148,
       y: 148,
@@ -145,10 +176,8 @@ $(document).ready(function () {
     };
   }
 
-  // This line sets the initial display
   resetDisplay();
 
-  // The below functions set the background for the shape to be displayed
   function setBackgroundWithObject(obj) {
     $("#shape").css("background", `url(images/${obj.color}-${obj.shape}.png)`);
     setBackgroundRepeat(obj.repeat);
@@ -165,7 +194,6 @@ $(document).ready(function () {
     $("#shape").css("background-size", `${100 / repeat}% ${100 / repeat}%`);
   }
 
-  // This function decides which animation(s) to apply
   function animate() {
     if (animationDetails.displayType !== 0) {
       $("#shape").html("");
@@ -203,7 +231,6 @@ $(document).ready(function () {
     }
   }
 
-  // This function animates bouncing
   function animateBounce() {
     animationDetails.x += animationDetails.speedX;
     animationDetails.y += animationDetails.speedY;
@@ -225,7 +252,6 @@ $(document).ready(function () {
     $("#shape").css("top", animationDetails.y);
   }
 
-  // This function animates blinking
   function animateBlink() {
     animationDetails.showCount--;
     if (animationDetails.showCount === 0) {
@@ -239,7 +265,6 @@ $(document).ready(function () {
     }
   }
 
-  // This function animates spinning
   function animateSpin() {
     animationDetails.angle += 4;
     $("#shape").css("transform", `rotate(${animationDetails.angle}deg)`);
